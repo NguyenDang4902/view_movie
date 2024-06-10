@@ -41,7 +41,8 @@ class _HomePageState extends State<HomePage> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          elevation: 0,
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
           bottom: TabBar(
             isScrollable: true,
             labelColor: Theme.of(context).colorScheme.primary,
@@ -54,83 +55,87 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        body: SingleChildScrollView(
-            child: Container(
-          margin: EdgeInsets.only(top: 20),
-          height: height,
-          //padding: EdgeInsets.all(10),
-          width: width,
-          child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 20,
-                childAspectRatio: 3 / 4,
-              ),
-              itemCount: resultsList?.length,
-              itemBuilder: ((context, index) {
-                final result = resultsList![index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => DetailsPage(result: result)
-                      )
-                    );
-                  },
-                  child: Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        // movie image
-                        Container(
-                          // height: height * 29 / 100,
-                          constraints: BoxConstraints(
-                            maxWidth: 150,
-                          ),
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  "https://image.tmdb.org/t/p/w500${result.posterPath}",
+        body: Visibility(
+          replacement: Center(child: CircularProgressIndicator(),),
+          visible: isLoaded,
+          child: SingleChildScrollView(
+              child: Container(
+            margin: EdgeInsets.only(top: 20),
+            height: height,
+            //padding: EdgeInsets.all(10),
+            width: width,
+            child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 20,
+                  childAspectRatio: 3 / 4,
+                ),
+                itemCount: resultsList?.length,
+                itemBuilder: ((context, index) {
+                  final result = resultsList![index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => DetailsPage(result: result)
+                        )
+                      );
+                    },
+                    child: Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          // movie image
+                          Container(
+                            // height: height * 29 / 100,
+                            constraints: BoxConstraints(
+                              maxWidth: 150,
+                            ),
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    "https://image.tmdb.org/t/p/w500${result.posterPath}",
+                                  ),
                                 ),
-                              ),
-                              // release date
-                              Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Container(
-                                    margin: EdgeInsets.all(8),
-                                    child: MyTextDesign(
-                                        text: convertDateFormat(
-                                            result.releaseDate.toString()),
-                                        fontSize: 12,
-                                        fontColor: Theme.of(context)
-                                            .colorScheme
-                                            .inversePrimary),
-                                  )),
-                            ],
+                                // release date
+                                Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Container(
+                                      margin: EdgeInsets.all(8),
+                                      child: MyTextDesign(
+                                          text: convertDateFormat(
+                                              result.releaseDate.toString()),
+                                          fontSize: 12,
+                                          fontColor: Theme.of(context)
+                                              .colorScheme
+                                              .inversePrimary),
+                                    )),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                        // movie name
-                        Container(
-                            constraints:
-                                BoxConstraints(maxWidth: 150, minWidth: 150),
-                            child: Center(
-                                child: MyTextDesign(
-                              text: result.title.toString(),
-                              textOverflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                              fontSize: 14,
-                              textAlign: TextAlign.center,
-                            )))
-                      ],
+                          const SizedBox(height: 10),
+                          // movie name
+                          Container(
+                              constraints:
+                                  BoxConstraints(maxWidth: 150, minWidth: 150),
+                              child: Center(
+                                  child: MyTextDesign(
+                                text: result.title.toString(),
+                                textOverflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                fontSize: 14,
+                                textAlign: TextAlign.center,
+                              )))
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              })),
-        )),
+                  );
+                })),
+          )),
+        ),
       ),
     );
   }
